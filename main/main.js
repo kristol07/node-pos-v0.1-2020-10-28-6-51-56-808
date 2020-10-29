@@ -13,29 +13,39 @@ module.exports = function main(items) {
         this.price = price;
     }
 
+    function formatUnit(quantity, unit)
+    {
+        if(unit !== 'a')
+        {
+            if(quantity > 0)
+            {
+                return ' ' + unit + 's';
+            }
+            else
+            {
+                return ' ' + unit;
+            }
+        }
+        else
+        {
+            return '';
+        }
+    }
+
     function printReceipt(uniqueItems) {
         var header = '***<store earning no money>Receipt ***\n';
         var hLine = '----------------------\n';
         var end = '**********************\n';
         var content = [];
         var total = 0;
-        for (const k of Object.getOwnPropertyNames(uniqueItems)) {
-            let quantity = uniqueItems[k].quantity;
-            var unit;
-            if (uniqueItems[k].unit !== 'a') {
-                if (quantity > 0) {
-                    unit = ' ' + uniqueItems[k].unit + 's';
-                } else {
-                    unit = ' ' + uniqueItems[k].unit;
-                }
-            } else {
-                unit = '';
-            }
-            let price = uniqueItems[k].price;
+        for (const name of Object.getOwnPropertyNames(uniqueItems)) {
+            let quantity = uniqueItems[name].quantity;
+            let unit = formatUnit(quantity, uniqueItems[name].unit); 
+            let price = uniqueItems[name].price;
             let subTotal = quantity * price;
             total += subTotal;
 
-            content.push('Name: ' + k + ', Quantity: ' + quantity + unit + ', Unit price: ' + price.toFixed(2) + ' (yuan), Subtotal: ' + subTotal.toFixed(2) + ' (yuan)\n');
+            content.push('Name: ' + name + ', Quantity: ' + quantity + unit + ', Unit price: ' + price.toFixed(2) + ' (yuan), Subtotal: ' + subTotal.toFixed(2) + ' (yuan)\n');
         }
 
         total = 'Total: ' + total.toFixed(2) + ' (yuan)\n';
@@ -44,7 +54,7 @@ module.exports = function main(items) {
 
         return receipt;
     }
-    
+
     var uniqueItems = {};
     for (const item of items) {
         if (uniqueItems[item.Name] === undefined) {
